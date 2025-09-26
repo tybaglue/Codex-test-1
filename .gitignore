@@ -1,54 +1,13 @@
-# Byte-compiled / optimized / DLL files
+# Python cache
 __pycache__/
-*.py[cod]
-*$py.class
+*.pyc
 
 # Virtual environment
 .venv/
 venv/
-env/
-ENV/
 
-# Distribution / packaging
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-
-# Jupyter Notebook checkpoints
-.ipynb_checkpoints
-
-# IDE / editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS files
+# OS junk
 .DS_Store
-Thumbs.db
 
-# Local environment variables
+# Secrets
 .env
