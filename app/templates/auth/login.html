@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Login · KGF Orders{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto">
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-4">
+    <div>
+      <h1 class="text-xl font-semibold text-slate-800">Admin Login</h1>
+      <p class="text-sm text-slate-500">Enter the admin password to access the dashboard.</p>
+    </div>
+    <form method="post" class="space-y-4">
+      <label class="block">
+        <span class="text-sm text-slate-600">Password</span>
+        <input type="password" name="password" required class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none" />
+      </label>
+      {% if error %}
+      <p class="text-sm text-red-600">{{ error }}</p>
+      {% endif %}
+      <button type="submit" class="w-full rounded-lg bg-slate-900 text-white py-2 text-sm font-medium">Log in</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

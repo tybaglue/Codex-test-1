@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}New Order · KGF{% endblock %}
+{% block content %}
+{% set form_data = form_data or {} %}
+<div class="max-w-3xl mx-auto space-y-6">
+  <div>
+    <h1 class="text-2xl font-semibold text-slate-800">New order</h1>
+    <p class="text-sm text-slate-500">Capture client and delivery details for your blooms.</p>
+  </div>
+  <form method="post" action="{{ url_for('new_order', token=form_token) if form_token else url_for('new_order') }}" class="bg-white rounded-xl border border-slate-200 p-6 space-y-6">
+    <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" />
+    <section class="space-y-4">
+      <h2 class="text-lg font-semibold text-slate-800">Client</h2>
+      <div class="grid gap-4 md:grid-cols-2">
+        <label class="block">
+          <span class="text-xs uppercase tracking-wide text-slate-500">Name</span>
+          <input type="text" name="client_name" value="{{ form_data.get('client_name', '') }}" required class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none" />
+        </label>
+        <label class="block">
+          <span class="text-xs uppercase tracking-wide text-slate-500">Phone</span>
+          <input type="text" name="client_phone" value="{{ form_data.get('client_phone', '') }}" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none" />
+        </label>
+        <label class="block">
+          <span class="text-xs uppercase tracking-wide text-slate-500">Email</span>
+          <input type="email" name="client_email" value="{{ form_data.get('client_email', '') }}" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none" />
+        </label>
+        <label class="block md:col-span-2">
+          <span class="text-xs uppercase tracking-wide text-slate-500">Address</span>
+          <textarea name="client_address" rows="2" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none">{{ form_data.get('client_address', '') }}</textarea>
+        </label>
+      </div>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-lg font-semibold text-slate-800">Order</h2>
+      <div class="grid gap-4 md:grid-cols-2">
+        <label class="block">
+          <span class="text-xs uppercase tracking-wide text-slate-500">Delivery date</span>
+          <input type="date" name="delivery_date" value="{{ form_data.get('delivery_date', '') }}" required class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none" />
+        </label>
+        <label class="block">
+          <span class="text-xs uppercase tracking-wide text-slate-500">Price (HKD)</span>
+          <input type="number" step="0.01" min="0" name="price_hkd" value="{{ form_data.get('price_hkd', '') }}" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none" />
+        </label>
+        <label class="block md:col-span-2">
+          <span class="text-xs uppercase tracking-wide text-slate-500">Items</span>
+          <textarea name="items_text" rows="4" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none" placeholder="Bouquet recipe, special requests, card message...">{{ form_data.get('items_text', '') }}</textarea>
+        </label>
+        <label class="block md:col-span-2">
+          <span class="text-xs uppercase tracking-wide text-slate-500">Notes</span>
+          <textarea name="notes" rows="3" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none">{{ form_data.get('notes', '') }}</textarea>
+        </label>
+      </div>
+    </section>
+
+    <button type="submit" class="w-full md:w-auto rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-medium">Submit order</button>
+  </form>
+</div>
+{% endblock %}

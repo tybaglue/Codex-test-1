@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Calendar · KGF{% endblock %}
+{% block content %}
+<div class="space-y-6">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold text-slate-800">Delivery Calendar</h1>
+      <p class="text-sm text-slate-500">Upcoming bouquets organised by date.</p>
+    </div>
+    <a href="{{ url_for('calendar_feed') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700">Subscribe (ICS)</a>
+  </div>
+
+  <div class="space-y-4">
+    {% for delivery_date, orders_for_day in grouped.items()|sort %}
+    <div class="bg-white rounded-xl border border-slate-200 p-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-lg font-semibold text-slate-800">{{ delivery_date.strftime('%A, %d %B %Y') }}</h2>
+          <p class="text-sm text-slate-500">{{ orders_for_day|length }} order{{ orders_for_day|length != 1 and 's' or '' }}</p>
+        </div>
+      </div>
+      <ul class="mt-4 space-y-3">
+        {% for order in orders_for_day %}
+        <li class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <p class="text-sm font-medium text-slate-700">{{ order.client.name }}</p>
+            <p class="text-sm text-slate-500">{{ order.items_text or 'Order details pending' }}</p>
+          </div>
+          <div class="text-sm text-slate-500">{{ order.price_hkd|currency }} · {{ order.status }}</div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% else %}
+    <p class="text-sm text-slate-500">No scheduled deliveries.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

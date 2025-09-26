@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Edit {{ client.name }} · KGF{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+  <div>
+    <h1 class="text-2xl font-semibold text-slate-800">Edit {{ client.name }}</h1>
+  </div>
+  <form method="post" class="bg-white rounded-xl border border-slate-200 p-6 space-y-4">
+    <label class="block">
+      <span class="text-xs uppercase tracking-wide text-slate-500">Name</span>
+      <input type="text" name="name" value="{{ client.name }}" required class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none" />
+    </label>
+    <label class="block">
+      <span class="text-xs uppercase tracking-wide text-slate-500">Email</span>
+      <input type="email" name="email" value="{{ client.email }}" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none" />
+    </label>
+    <label class="block">
+      <span class="text-xs uppercase tracking-wide text-slate-500">Phone</span>
+      <input type="text" name="phone" value="{{ client.phone }}" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none" />
+    </label>
+    <label class="block">
+      <span class="text-xs uppercase tracking-wide text-slate-500">Address</span>
+      <textarea name="address" rows="2" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none">{{ client.address }}</textarea>
+    </label>
+    <label class="block">
+      <span class="text-xs uppercase tracking-wide text-slate-500">Notes</span>
+      <textarea name="notes" rows="3" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none">{{ client.notes }}</textarea>
+    </label>
+    <button type="submit" class="w-full md:w-auto rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-medium">Save changes</button>
+  </form>
+</div>
+{% endblock %}
