@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Order {{ order.public_id }} · KGF{% endblock %}
+{% block content %}
+<div class="space-y-6">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold text-slate-800">Order {{ order.public_id }}</h1>
+      <p class="text-sm text-slate-500">Delivery {{ order.delivery_date.strftime('%d %b %Y') }}</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <form method="post" action="{{ url_for('toggle_order', order_id=order.id) }}">
+        <button class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700">Toggle status</button>
+      </form>
+      <a href="{{ url_for('edit_order', order_id=order.id) }}" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700">Edit</a>
+      <form method="post" action="{{ url_for('delete_order', order_id=order.id) }}" onsubmit="return confirm('Archive this order?');">
+        <button class="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-600">Archive</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl border border-slate-200 divide-y divide-slate-200">
+    <div class="px-4 py-4 grid gap-2">
+      <h2 class="text-lg font-semibold text-slate-800">Client</h2>
+      <p class="text-sm text-slate-600">{{ order.client.name }}</p>
+      <p class="text-sm text-slate-500">{{ order.client.phone or 'Phone not provided' }}</p>
+      <p class="text-sm text-slate-500">{{ order.client.email or 'Email not provided' }}</p>
+      <p class="text-sm text-slate-500">{{ order.client.address or 'Address not provided' }}</p>
+    </div>
+    <div class="px-4 py-4 grid gap-3">
+      <div>
+        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Items</h3>
+        <p class="mt-1 text-sm text-slate-600 whitespace-pre-line">{{ order.items_text or '—' }}</p>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Notes</h3>
+        <p class="mt-1 text-sm text-slate-600 whitespace-pre-line">{{ order.notes or '—' }}</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-4">
+        <div>
+          <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Price</h3>
+          <p class="mt-1 text-sm text-slate-600">{{ order.price_hkd|currency }}</p>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Status</h3>
+          <p class="mt-1 text-sm text-slate-600 capitalize">{{ order.status }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl border border-slate-200 px-4 py-4">
+    <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">Calendar</h3>
+    <p class="mt-1 text-sm text-slate-600">Add to calendar via the shared ICS feed at <a href="{{ url_for('calendar_feed') }}" class="text-slate-700 underline">{{ url_for('calendar_feed', _external=true) }}</a>.</p>
+  </div>
+</div>
+{% endblock %}

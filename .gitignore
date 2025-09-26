@@ -1,13 +1,7 @@
-# Python cache
 __pycache__/
 *.pyc
-
-# Virtual environment
+instance/
+kgf.db
 .venv/
-venv/
-
-# OS junk
-.DS_Store
-
-# Secrets
 .env
+*.sqlite3

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Clients · KGF{% endblock %}
+{% block content %}
+<div class="space-y-6">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold text-slate-800">Clients</h1>
+      <p class="text-sm text-slate-500">Keep customer details handy for future blooms.</p>
+    </div>
+    <a href="{{ url_for('new_client') }}" class="inline-flex items-center justify-center rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-medium">New client</a>
+  </div>
+
+  <form method="get" class="flex flex-col md:flex-row gap-2 md:items-center">
+    <label class="flex-1">
+      <span class="sr-only">Search</span>
+      <input type="search" name="q" value="{{ q }}" placeholder="Search clients" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none" />
+    </label>
+    <button class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700">Search</button>
+  </form>
+
+  <div class="bg-white rounded-xl border border-slate-200">
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wide">
+          <tr>
+            <th class="px-4 py-3 text-left">Client</th>
+            <th class="px-4 py-3 text-left">Email</th>
+            <th class="px-4 py-3 text-left">Phone</th>
+            <th class="px-4 py-3 text-left">Orders</th>
+            <th class="px-4 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          {% for client in clients %}
+          <tr class="hover:bg-slate-50">
+            <td class="px-4 py-3 text-slate-700 font-medium">{{ client.name }}</td>
+            <td class="px-4 py-3 text-slate-600">{{ client.email or '—' }}</td>
+            <td class="px-4 py-3 text-slate-600">{{ client.phone or '—' }}</td>
+            <td class="px-4 py-3 text-slate-600">{{ client.orders|length }}</td>
+            <td class="px-4 py-3 text-right">
+              <a href="{{ url_for('client_detail', client_id=client.id) }}" class="text-slate-700 hover:text-slate-900 font-medium">View</a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" class="px-4 py-6 text-center text-slate-400">No clients yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

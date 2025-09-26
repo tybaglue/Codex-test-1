@@ -1,0 +1,7 @@
+{% for order in orders %}
+  {% include "orders/_order_row.html" %}
+{% else %}
+<tr>
+  <td colspan="6" class="px-4 py-6 text-center text-sm text-slate-400">No orders found.</td>
+</tr>
+{% endfor %}

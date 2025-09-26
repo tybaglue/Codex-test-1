@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Orders · KGF{% endblock %}
+{% block content %}
+<div class="space-y-6">
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold text-slate-800">Orders</h1>
+      <p class="text-sm text-slate-500">Manage bouquets and deliveries from one list.</p>
+    </div>
+    <a href="{{ url_for('new_order') }}" class="inline-flex items-center justify-center rounded-lg bg-slate-900 text-white px-4 py-2 text-sm font-medium">New order</a>
+  </div>
+
+  <div class="bg-white rounded-xl border border-slate-200">
+    <form class="border-b border-slate-200 px-4 py-4 grid grid-cols-1 md:grid-cols-3 gap-3" hx-get="{{ url_for('orders_list') }}" hx-target="#orders-table-body" hx-trigger="change delay:400ms, keyup delay:400ms">
+      <label class="block">
+        <span class="text-xs uppercase tracking-wide text-slate-500">Status</span>
+        <select name="status" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none">
+          <option value="all" {% if status_filter=='all' %}selected{% endif %}>All</option>
+          <option value="unfulfilled" {% if status_filter=='unfulfilled' %}selected{% endif %}>Unfulfilled</option>
+          <option value="fulfilled" {% if status_filter=='fulfilled' %}selected{% endif %}>Fulfilled</option>
+        </select>
+      </label>
+      <label class="block md:col-span-2">
+        <span class="text-xs uppercase tracking-wide text-slate-500">Search</span>
+        <input type="search" name="q" value="{{ q }}" placeholder="Client, phone, email, order ID" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none" />
+      </label>
+    </form>
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wide">
+          <tr>
+            <th class="px-4 py-3 text-left">Order</th>
+            <th class="px-4 py-3 text-left">Client</th>
+            <th class="px-4 py-3 text-left">Delivery</th>
+            <th class="px-4 py-3 text-left">Price</th>
+            <th class="px-4 py-3 text-left">Status</th>
+            <th class="px-4 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="orders-table-body" class="divide-y divide-slate-100">
+          {% include "orders/_order_rows.html" %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
