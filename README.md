@@ -1,83 +1,110 @@
 # KGF Orders MVP
 
-Minimal florist order manager for Kew Garden Flowers. Built with Flask, SQLite and HTMX for quick deployment on Replit.
+Minimal florist order manager for Kew Garden Flowers. Built as a mobile-first Flask app that unifies website, WhatsApp, Instagram, and brand orders.
 
 ## Features
+- Dashboard with unfulfilled count and delivery snapshots (today, week, month)
+- Orders table with HTMX filters and inline status toggles
+- Order detail view with quick actions (toggle, edit, delete)
+- Public/admin order form with honeypot and rate limiting
+- Client directory with search, detail pages, and linked orders
+- Calendar view plus `/calendar.ics` feed for Google Calendar subscriptions
+- CSV exports for orders and clients
+- Seed script and CLI helper to generate the next `public_id`
+- Minimal pytest coverage for status toggle and ICS feed
 
-- Password-protected admin dashboard with order metrics and quick links.
-- Orders list with search, status filters, inline fulfilment toggle (HTMX) and detail views.
-- Mobile-friendly order form that supports public submissions when gated by a token.
-- Client directory with contact management and linked order history.
-- Delivery calendar view plus an ICS feed for subscribing in Google Calendar.
-- CSV exports for orders and clients.
-- Seed script and CLI helper to generate the next public order ID.
+## Tech Stack
+- Python 3 + Flask + Flask-SQLAlchemy
+- SQLite (file-backed by default)
+- HTMX for partial updates
+- Tailwind CSS via CDN
 
-## Getting started on Replit
+## Getting Started
 
-1. Create a new Replit project using the **Python** template.
-2. Upload the repository files into the Replit workspace.
-3. In the Replit shell, install dependencies: `pip install -r requirements.txt`.
-4. Create a `.env` file in Replit with the environment variables shown below (at minimum set `ADMIN_PASSWORD`).
-5. Click **Run** to start the Flask server (`main.py`). Replit will expose the web preview URL automatically.
-
-### Environment variables
-
-| Variable | Description |
-| --- | --- |
-| `ADMIN_PASSWORD` | Password required to access the admin dashboard. |
-| `PUBLIC_FORM_TOKEN` | Optional token required for the public `/orders/new` form. Leave unset for admin-only usage. |
-| `SECRET_KEY` | Flask session secret. Replit generates one automatically but you can override it. |
-| `RATELIMIT_MAX_PER_HOUR` | Optional rate limit for the public order form (default `10`). |
-
-You can set these in Replit under **Secrets** or in a `.env` file when running locally.
-
-### Database
-
-The app uses SQLite by default (`kgf.db`). The database file will be created on first run.
-
-To populate sample data for demos or testing, run:
-
+### 1. Install dependencies
 ```bash
-python scripts/seed.py
-```
-
-To print the next public order ID without creating an order:
-
-```bash
-python scripts/next_public_id.py
-```
-
-## Running locally
-
-```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-export ADMIN_PASSWORD="your-password"
-flask --app main run --debug
 ```
 
-The app listens on `http://localhost:5000`.
+### 2. Environment variables
+Copy `.env.example` to `.env` (or define the variables directly in Replit):
 
-## Tests
+- `ADMIN_PASSWORD` (required) – password for `/login`
+- `PUBLIC_FORM_TOKEN` (optional) – query token required for public order form access
+- `CALENDAR_TOKEN` (optional) – query token required for `/calendar.ics`
+- `APP_TIMEZONE` (default `Europe/London`)
+- `RATE_LIMIT_WINDOW` / `RATE_LIMIT_REQUESTS` – throttle for public order form submissions
 
-Run the automated tests with:
+### 3. Initialize the database
+```bash
+python main.py  # first run will create kgf_orders.db
+python scripts/seed.py  # optional sample data
+```
 
+### 4. Run the app locally
+```bash
+FLASK_APP=main.py flask run
+# or
+python main.py
+```
+
+### Deploying on Replit
+1. Create a new Replit (Python template) and upload this project or connect the GitHub repo.
+2. Add `requirements.txt` packages via the Replit package manager (auto-detected) or `pip install -r requirements.txt`.
+3. Set environment variables in the Replit Secrets panel:
+   - `ADMIN_PASSWORD`
+   - Optionally `PUBLIC_FORM_TOKEN`, `CALENDAR_TOKEN`, `APP_TIMEZONE`
+4. Use `python main.py` as the Run command. Replit will show the web preview URL.
+
+### Running tests
 ```bash
 pytest
 ```
 
-This covers the order status toggle endpoint and the ICS calendar feed.
+## Using the App
+- **Login:** visit `/login` and sign in with `ADMIN_PASSWORD`.
+- **Dashboard:** shows key counts, recent orders, and quick links.
+- **Orders:** filter via the status dropdown or search box (HTMX updates the table only). Toggle status inline or open an order to edit.
+- **Public order form:** share `/orders/new?token=YOUR_TOKEN` if `PUBLIC_FORM_TOKEN` is set. Includes honeypot field and rate limiting for spam protection.
+- **Clients:** manage contact details and review their order history.
+- **Calendar:** `/calendar` lists deliveries by day; subscribe to `/calendar.ics` in Google Calendar. If `CALENDAR_TOKEN` is set, append `?token=...` to the URL when subscribing.
+- **Exports:** download `/export.csv` and `/clients.csv` for bookkeeping.
 
-## Calendar subscription
+## Utilities
+- `scripts/seed.py` – add sample clients/orders (skips if data already exists).
+- `scripts/next_public_id.py` – prints the next order `public_id` (uses current year).
 
-- Visit `/calendar.ics` on your deployed instance to download the iCalendar feed.
-- In Google Calendar, choose **Other calendars → Add by URL** and paste the `/calendar.ics` link.
-- Deliveries will appear as all-day events titled `Delivery – <Client Name>`.
+## Directory Overview
+```
+app/
+  __init__.py        # Flask app factory
+  models.py          # SQLAlchemy models
+  routes/            # Blueprints (auth, dashboard, orders, clients, calendar, exports)
+  templates/         # Jinja templates (Tailwind + HTMX)
+  utils.py           # Helpers (auth guard, currency filter, rate limiter)
+main.py              # Entry point
+requirements.txt     # Python dependencies
+scripts/             # Seed and CLI utilities
+tests/               # Pytest suite
+```
 
-## Data export
+## ICS subscription tips
+- Google Calendar: **Settings > Add calendar > From URL** and paste the `/calendar.ics` link (include `?token=` if required).
+- Calendar refreshes are controlled by Google; allow up to a few hours for updates.
 
-- `/export.csv` downloads all active orders in CSV format.
-- `/clients.csv` downloads all active clients.
+## Data exports
+- `/export.csv` includes `order_id, public_id, client_name, delivery_date, status, price_hkd, items_text, notes` with HKD values including cents.
+- `/clients.csv` includes `client_id, name, phone, email, address, notes, created_at`.
 
-Both endpoints require admin authentication.
+## Deploying to Vercel
+1. Pull the latest code so the local `vercel_wsgi.py` adapter ships with your deployment.
+2. Create a `.env` file alongside `main.py` with at least:
+   - `ADMIN_PASSWORD`
+   - `SECRET_KEY`
+   - (optional) `PUBLIC_FORM_TOKEN`
+3. In the Vercel dashboard, import this repository as a new project.
+4. Under **Settings → Environment Variables**, add the same variables (copy from your `.env`).
+5. Deploy. `vercel.json` routes every request to `api/index.py`, which uses the adapter to serve the Flask app.
+6. For later updates, push to the default branch or trigger a redeploy in Vercel.
