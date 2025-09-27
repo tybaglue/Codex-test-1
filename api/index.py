@@ -1,8 +1,5 @@
 from app import create_app
-from vercel_wsgi import handle
 
+# Expose the raw Flask WSGI callable. Vercel's Python runtime will
+# automatically treat any `app` attribute as the entrypoint for WSGI.
 app = create_app()
-
-
-def handler(event, context):
-    return handle(app, event, context)

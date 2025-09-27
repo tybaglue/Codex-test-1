@@ -99,14 +99,14 @@ tests/               # Pytest suite
 - `/clients.csv` includes `client_id, name, phone, email, address, notes, created_at`.
 
 ## Deploying to Vercel
-1. Pull the latest code so the local `vercel_wsgi.py` adapter ships with your deployment.
+1. Pull the latest code so the latest `api/index.py` is deployed.
 2. Create a `.env` file alongside `main.py` with at least:
    - `ADMIN_PASSWORD`
    - `SECRET_KEY`
    - (optional) `PUBLIC_FORM_TOKEN`
 3. In the Vercel dashboard, import this repository as a new project.
 4. Under **Settings → Environment Variables**, add the same variables (copy from your `.env`).
-5. Deploy. `vercel.json` routes every request to `api/index.py`, which uses the adapter to serve the Flask app.
+5. Deploy. `vercel.json` routes every request to `api/index.py`, which exports the Flask app as a WSGI callable that Vercel invokes directly.
 6. For later updates, push to the default branch or trigger a redeploy in Vercel.
 
 > **Note:** Vercel serverless functions have a read-only filesystem. The app automatically falls back to storing the SQLite database in `/tmp/kgf.db` when the `VERCEL` environment variable is present. `/tmp` is ephemeral, so data will not persist between deployments or cold starts—connect an external database for production use.
