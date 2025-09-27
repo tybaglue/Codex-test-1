@@ -26,7 +26,10 @@ db = SQLAlchemy()
 
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "change-me")
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///kgf.db")
+    _default_db = "sqlite:///kgf.db"
+    if os.environ.get("VERCEL"):
+        _default_db = "sqlite:////tmp/kgf.db"
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", _default_db)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "")
     PUBLIC_FORM_TOKEN = os.environ.get("PUBLIC_FORM_TOKEN")

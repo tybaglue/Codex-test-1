@@ -108,3 +108,5 @@ tests/               # Pytest suite
 4. Under **Settings → Environment Variables**, add the same variables (copy from your `.env`).
 5. Deploy. `vercel.json` routes every request to `api/index.py`, which uses the adapter to serve the Flask app.
 6. For later updates, push to the default branch or trigger a redeploy in Vercel.
+
+> **Note:** Vercel serverless functions have a read-only filesystem. The app automatically falls back to storing the SQLite database in `/tmp/kgf.db` when the `VERCEL` environment variable is present. `/tmp` is ephemeral, so data will not persist between deployments or cold starts—connect an external database for production use.
